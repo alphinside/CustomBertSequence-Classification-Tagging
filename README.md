@@ -1,7 +1,8 @@
 # How to Use
 
-1. Download the model
-2. Construct the object like example below
+1. Install dependencies, see Dockerfile
+2. Download the model
+3. Construct the object like example below
 
         from sentiment_label import BertKemenkunhamSentimentClassification
 
@@ -11,13 +12,13 @@
             labels_list=['netral', 'negatif', 'positif']
         )
 
-3. Predict some text
+4. Predict some text
 
         text = 'indexalaw rocks \n something something somesucks.'
 
         result = sentiment_classifier.predict(text)
 
-4. The output is in dictionary format, with key is the string labels and value is float probability. Select the highest value as appointed label
+5. The output is in dictionary format, with key is the string labels and value is float probability. Select the highest value as appointed label
 
         print(result)
 
