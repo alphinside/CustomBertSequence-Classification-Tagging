@@ -136,7 +136,7 @@ class InputFeatures(object):
 
 if __name__ == "__main__":
     sentiment_classifier = BertKemenkunhamSentimentClassification(
-        gpu_id=0,
+        gpu_id=-1,
         models_dir='models',
         labels_list=['netral', 'negatif', 'positif']
     )
@@ -148,6 +148,8 @@ if __name__ == "__main__":
     import operator
     from sklearn.metrics import accuracy_score
     from tqdm import tqdm
+    import time
+    import numpy as np
 
     def preprocess(text):
         text = ''.join(text.split('WIB')[1:])
@@ -163,18 +165,23 @@ if __name__ == "__main__":
     label_list = ['netral', 'negatif', 'positif']
     gts = []
     preds = []
+    inf_time_list = []
     for line in tqdm(lines):
         gt = label_list.index(line.split(' ')[-1])
 
         with open(os.path.join('dataset/news_data', line.split(' ')[0]), 'r') as f:
             text = preprocess(f.read())
-
+        start = time.time()
         result = sentiment_classifier.predict(text)
+        delta = time.time()-start
+
+        inf_time_list.append(delta)
 
         pred = label_list.index(
             max(result.items(), key=operator.itemgetter(1))[0])
         gts.append(gt)
         preds.append(pred)
-
+    infps_time_list = np.array(inf_time_list)
+    print(f'Average inference time = {np.mean(inf_time_list)} s')
     print(
         f'Accuracy from validation data : {accuracy_score(gts, preds)*100} %')
